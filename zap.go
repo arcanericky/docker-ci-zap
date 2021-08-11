@@ -1,46 +1,45 @@
 // +build windows
-package main
+
+package dockercizap
 
 import (
-	"flag"
-	"fmt"
+	"errors"
 	"os"
 	"path/filepath"
 
 	"github.com/Microsoft/hcsshim"
 )
 
-func folderexists(path string) bool {
-	_, err := os.Stat(path)
-	if err == nil {
-		return true
-	}
-	if os.IsNotExist(err) {
+var destroyer func(hcsshim.DriverInfo, string) error = hcsshim.DestroyLayer
+var folderChecker func(string) bool = folderExists
+
+func folderExists(folder string) bool {
+	if fi, err := os.Stat(folder); err != nil {
+		return false
+	} else if !fi.IsDir() {
 		return false
 	}
+
 	return true
 }
 
-func main() {
-	var folder string
-	flag.StringVar(&folder, "folder", "", "Folder to zap.")
-	flag.Parse()
-	if folder == "" {
-		fmt.Println("Error: folder must be supplied")
-		return
+func destroyLayer(folder string) error {
+	location, folderName := filepath.Split(folder)
+
+	return destroyer(hcsshim.DriverInfo{
+		HomeDir: location,
+		Flavour: 0,
+	}, folderName)
+}
+
+func Zap(folder string) error {
+	if !folderChecker(folder) {
+		return errors.New("folder does not exist")
 	}
-	if folderexists(folder) {
-		location, foldername := filepath.Split(folder)
-		info := hcsshim.DriverInfo{
-			HomeDir: location,
-			Flavour: 0,
-		}
-		if err := hcsshim.DestroyLayer(info, foldername); err != nil {
-			fmt.Println("ERROR: ", err)
-		} else {
-			fmt.Println("INFO: Zapped successfully")
-		}
-	} else {
-		fmt.Println("ERROR: Folder does not exist")
+
+	if err := destroyLayer(folder); err != nil {
+		return err
 	}
+
+	return nil
 }
