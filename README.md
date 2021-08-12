@@ -5,6 +5,14 @@ A utility to obliterate the `C:\ProgramData\docker` directory when nothing else 
 [![Build](https://github.com/arcanericky/docker-ci-zap/actions/workflows/builder.yml/badge.svg)](https://github.com/arcanericky/docker-ci-zap/actions/workflows/builder.yml)
 ![GitHub License](https://img.shields.io/github/license/arcanericky/dockercizap)
 
+## WARNING
+
+Before using this utility you should read a couple of posts on the dangers of using it, including _the possibility that you might "break the operating system"_. Instead, consider using the GUI and navigating to _Settings_, then _Reset_. Good luck.
+
+- [Dangerous Utility][danger]
+- [Clean up after yourself Docker][cleanup]
+- [Disk space full running your Sitecore Docker instances][diskfull]
+
 ## Dependencies
 
 This package relies on the [hcsshim package][hcsshim] for the heavy lifting.
@@ -33,7 +41,10 @@ The [original project][docker-ci-zap] hasn't been updated in years and there are
 
 This project forks the original, adding more formal build and test steps along with a more formal release using versions. It's an attempt to make this executable more accessible and more safe. Because no one really enjoys downloading and running some random executable packed into a random repository.
 
+[cleanup]: https://freddysblog.com/2018/12/11/clean-up-after-yourself-docker-your-mom-isnt-here/
 [container-overview]: https://docs.microsoft.com/en-us/virtualization/windowscontainers/manage-containers/container-storage
+[danger]: https://github.com/moby/moby/issues/26873#issuecomment-249338936
+[diskfull]: https://visionsincode.com/2021/02/14/disk-space-full-running-your-sitecore-docker-instances/
 [docker-ci-zap]: https://github.com/moby/docker-ci-zap
 [docker-windows]: https://docs.docker.com/docker-for-windows/install/
 [hcsshim]: https://github.com/Microsoft/hcsshim
